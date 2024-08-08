@@ -10,19 +10,18 @@ import zmaster587.libVulpes.api.IJetPack;
 import zmaster587.libVulpes.api.IModularArmor;
 
 import java.util.HashMap;
+import java.util.UUID;
 
 public class InputSyncHandler {
-
-	public static HashMap<EntityPlayer, Boolean> spaceDown = new HashMap<>();
-	
+	public static HashMap<UUID, Boolean> spaceDown = new HashMap<>();
 
 	public static boolean isSpaceDown(EntityPlayer player) {
-		Boolean bool = spaceDown.get(player);
+		Boolean bool = spaceDown.get(player.getUniqueID());
 		
 		return bool != null && bool;
 	}
 	
-	//Called on server
+	//Called on server (and client in AR KeyBindings class)
 	public static void updateKeyPress(EntityPlayer player, int key, boolean state) {
 		ItemStack stack;
 		switch(key) {
@@ -73,7 +72,7 @@ public class InputSyncHandler {
 			}
 			break;
 		case 57: //SPACE
-			spaceDown.put(player, state);
+			spaceDown.put(player.getUniqueID(), state);
 			break;
 			
 			default:
@@ -83,11 +82,11 @@ public class InputSyncHandler {
 	
 	@SubscribeEvent
 	public void onPlayerLoggedOut(PlayerLoggedOutEvent evt) {
-		spaceDown.remove(evt.player);
+		spaceDown.remove(evt.player.getUniqueID());
 	}
 
 	@SubscribeEvent
 	public void onDimChanged(PlayerChangedDimensionEvent evt) {
-		spaceDown.remove(evt.player);
+		spaceDown.remove(evt.player.getUniqueID());
 	}
 }
